@@ -1,6 +1,6 @@
 import closeIconPath from '../images/Close-Icon.svg';
 
-function PopupWithForm({title, name, children, isOpen, onClose}) {
+function PopupWithForm({title, name, children, isOpen, onClose, buttonText}) {
     return (
         <div className={`popup popup_${name} ${isOpen && 'popup_opened'}`}>
             <form name={name} className="popup__container" >
@@ -9,6 +9,7 @@ function PopupWithForm({title, name, children, isOpen, onClose}) {
                 </button>
                 <h2 className="popup__title">{title}</h2>
                 {children}
+                <button type="submit" className="popup__button">{buttonText}</button>
             </form>
         </div>
     )

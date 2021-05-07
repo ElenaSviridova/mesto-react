@@ -17,17 +17,24 @@ function Main({onEditProfile, onAddPlace , onEditAvatar, onCardClick}) {
         setUserDescription(data.about)
         setUserAvatar(data.avatar)
       })
+      .catch(err => {
+          console.log(err)
+      })
   },[])
 
   useEffect(() => {
       api.getInitialCards()
         .then(data => {
+            console.log(data)
             setCards(data.map(item => ({
-                title: item.name,
-                image: item.link,
-                likeNumbers: item.likes.length,
-                id: item._id
+                name: item.name,
+                link: item.link,
+                likes: item.likes,
+                _id: item._id
               })))
+        })
+        .catch(err => {
+            console.log(err)
         })
   }, [])
 
@@ -50,7 +57,7 @@ function Main({onEditProfile, onAddPlace , onEditAvatar, onCardClick}) {
                       </button>       
               </section>
               <section className="elements">
-                  {cards.map((card) => <Card key={card.id} onCardClick={onCardClick} card={card} title={card.title} image={card.image} likeNumbers={card.likeNumbers} />)}
+                  {cards.map((card) => <Card key={card._id} onCardClick={onCardClick} card={card} name={card.name} link={card.link} likes={card.likes} />)}
                    
               </section>
         </main>

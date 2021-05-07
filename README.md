@@ -1,4 +1,18 @@
-# Getting Started with Create React App
+# Интерфейсы с использованием React
+
+**Интро**
+В данной работе мы создаём, настраиваем и дебажим проект на «Реакте»б а также практикуем использование функциональных компонентов, синтаксиса JSX и хуков. 
+
+### В проекте используются:
+* синтаксис JSX
+* Хуки
+* Функциональные компоненты
+* Декларативный подход
+
+**JavaScript**
+ В данном проекте использовались язык программтрования JavaScript.
+* [Ссылка на GitHub Pages](https://elenasviridova.github.io/mesto-react/)
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

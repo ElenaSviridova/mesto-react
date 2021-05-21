@@ -1,30 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import editButtonPath from '../images/edit-button.svg';
 import addButtonPath from '../images/plus.svg';
-import api from '../utils/api';
 import Card from '../components/Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { CardsContext } from '../contexts/CardsContext';
 
-function Main({onEditProfile, onAddPlace , onEditAvatar, onCardClick, setCards}) {
-  const cards = React.useContext(CardsContext);
+
+function Main({onEditProfile, onAddPlace , onEditAvatar, onCardClick, onCardLike, onCardDelete, cards}) {
+
   const currentUser = React.useContext(CurrentUserContext);
-  
-  function handleCardDelete(card) {
-        api.removeCards(card._id).then(setCards((state) => state.filter((c) => c._id !== card._id))) 
-            
-  }
-
-  function handleCardLike(card) {
-
-    // Снова проверяем, есть ли уже лайк на этой карточке
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    
-    // Отправляем запрос в API и получаем обновлённые данные карточки
-    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
-        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
-    });
-}
 
     return (
         <main className="main">
@@ -45,7 +28,7 @@ function Main({onEditProfile, onAddPlace , onEditAvatar, onCardClick, setCards})
                       </button>       
               </section>
               <section className="elements">
-                  {cards.map((card) => <Card key={card._id} onCardClick={onCardClick} card={card} name={card.name} link={card.link} likes={card.likes} onCardLike={handleCardLike} onCardDelete={handleCardDelete}/>)} 
+                  {cards.map((card) => <Card key={card._id} onCardClick={onCardClick} card={card} name={card.name} link={card.link} likes={card.likes} onCardLike={onCardLike} onCardDelete={onCardDelete}/>)} 
               </section>
         </main>
         

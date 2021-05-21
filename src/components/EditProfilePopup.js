@@ -9,8 +9,10 @@ function EditProfilePopup({isOpen, onClose, onUpdateUser}) {
     // После загрузки текущего пользователя из API
     // его данные будут использованы в управляемых компонентах.
     useEffect(() => {
-        setName(currentUser.name);
-        setDescription(currentUser.about);
+            if (currentUser) {
+            setName(currentUser.name);
+            setDescription(currentUser.about);
+        }
     }, [currentUser]); 
 
     function handleNameChange(e) {

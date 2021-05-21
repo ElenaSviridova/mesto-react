@@ -9,19 +9,35 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { CardsContext } from '../contexts/CardsContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
-    const [currentUser, setCurrentUser] = useState([]);
+    const [currentUser, setCurrentUser] = useState('');
     const [cards, setCards] = useState([]);
+
+  function handleCardDelete(card) {
+        api.removeCards(card._id).then(setCards((state) => state.filter((c) => c._id !== card._id))) 
+            
+  }
+
+  function handleCardLike(card) {
+
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+        setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
+    });
+  }
     
     useEffect(() => {
         api.getInitialCards()
           .then(data => {
-              console.log(data)
               setCards(data);
           })
           .catch(err => {
@@ -84,34 +100,30 @@ function App() {
           .finally(closeAllPopups())
     }
 
+    function handleAddPlaceSubmit(card) {
+        api.addCard(card)
+        .then(newCard => {
+            setCards([...cards, newCard])
+          })
+          .catch(err => {
+              console.log(err)
+          })
+          .finally(closeAllPopups())
+    }
+
   return (
       <CurrentUserContext.Provider value= {currentUser}>
       <CardsContext.Provider value= {cards}>    
        <div className="page">
           <Header />
-          <Main onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} setCards={setCards}/>
+          <Main onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} cards={cards} />
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
-          <PopupWithForm title="Новое место" name="add" isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} buttonText='Создать'>
-                <input name="Name" type="text" id= "author-add-input" className="popup__input popup__input_text_name" placeholder="Название" />
-                <span className="popup__error author-add-input-error"></span>
-                <input name="Link" type="url" id= "profile-add-input" className="popup__input popup__input_text_about-yourself" placeholder="Ссылка на картинку" />
-                <span className="popup__error profile-add-input-error"></span>
-          </PopupWithForm>
+          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}  />
           <PopupWithForm title='Вы уверены?' name="delete-card" isOpen={false} onClose={closeAllPopups} buttonText='Да'>
-
           </PopupWithForm>
-            {/* <div className="popup popup_delete-card">
-                <form name="myForm" className="popup__container" >
-                    <button type="button" className="popup__close-button">
-                        <img src={closeIconPath} alt="картинка закрытия окна" className="popup__close-icon"/>
-                    </button>
-                    <h2 className="popup__question">Вы уверены?</h2>
-                    <button type="submit" className="popup__button popup__button_margin">Да</button>
-                </form>    
-            </div> */}
-            <Footer />
+          <Footer />
         </div>
         </CardsContext.Provider>
        </CurrentUserContext.Provider>

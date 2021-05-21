@@ -1,6 +1,5 @@
 import closeIconPath from '../images/Close-Icon.svg';
  
-
 function PopupWithForm({title, name, children, isOpen, onClose, buttonText, onSubmit}) {
 
     return (

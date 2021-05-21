@@ -42,7 +42,7 @@ export class Api {
         }).then(this._getResponseData)
     }
 
-    addCards(data) {
+    addCard(data) {
         return fetch(`${this._adress}/cards`, {
             method: 'POST',
             headers: {
